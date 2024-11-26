@@ -1,0 +1,8 @@
+env/
+inputs/
+__pycache__/
+
+*.txt
+*.in
+*.out
+.env
