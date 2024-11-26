@@ -20,7 +20,8 @@ def main():
         if args.download_input:
             res = download(args.day)
         if not args.download_input and not args.generate_day:
-            res = advent.run(args.day, args.file, args.num_runs, args.hide)
+            file = 'test.in' if args.use_test_input else args.file
+            res = advent.run(args.day, file, args.num_runs, args.hide)
             print_table([res])
     elif args.run_all:
         res = advent.run_all(args.num_runs, args.hide)
