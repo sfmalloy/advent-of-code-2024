@@ -1,9 +1,6 @@
-import os
-
 YEAR = 2023
 MONTH = 12
 URL = f'https://adventofcode.com/{YEAR}'
-USER_AGENT = os.getenv('USER_AGENT')
 
 def solution_template(day_number: int) -> str:
     return f'''from io import TextIOWrapper

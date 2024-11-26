@@ -74,7 +74,7 @@ def print_table(outputs: list[Result]):
 
 
 def generate_new_file(day_number):
-    path = Path('src') / f'd{day_number:0>2}.py'
+    path = Path('solutions') / f'd{day_number:0>2}.py'
     if not path.parent.exists():
         path.parent.mkdir()
     if not path.exists():

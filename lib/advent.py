@@ -1,8 +1,8 @@
-import os
-from typing import Callable, Any, Optional
-from io import TextIOWrapper
-from timeit import default_timer as timer
 from dataclasses import dataclass
+from io import TextIOWrapper
+from pathlib import Path
+from timeit import default_timer as timer
+from typing import Callable, Any, Optional
 
 from lib.api import download
 
@@ -84,7 +84,6 @@ class Advent:
                 self._days[day_number] = fn
 
         return day_decorator
-    
 
     def parser(self, day_number: int):
         '''
@@ -95,11 +94,35 @@ class Advent:
 
         return parser_decorator
 
+
+    def run(self, day_number: int, input_path: str=None, num_runs: int=1, hide: bool=False):
+        if day_number not in self._days \
+            and (day_number, 1) not in self._days \
+            and (day_number, 2) not in self._days:
+            raise DayNotFoundException(f'Day {day_number} solution not found')
+
+        if num_runs == 1:
+            return self._run_single(day_number, input_path, hide)
+        return self._run_multi(day_number, input_path, num_runs, hide)
+
+    
+    def run_all(self, num_runs: int=1, hide: bool=False):
+        days = set()
+        for d in self._days.keys():
+            if isinstance(d, tuple):
+                days.add(d[0])
+            else:
+                days.add(d)
+        results = []
+        for d in days:
+            results.append(self.run(d, num_runs=num_runs, hide=hide))
+        return results
+
+
     def _run_single(self, day_number: int, input_path: str, hide: bool) -> Result:
-        if not input_path:
-            input_path = os.path.join('inputs', f'd{day_number:0>2}.in')
-            if not os.path.exists(input_path):
-                download(day_number)
+        path = Path(input_path) if input_path else Path('inputs') / f'd{day_number:0>2}.in'
+        if not path.exists():
+            download(day_number)
 
         res = Result(day_number, hide=hide)
         with open(input_path) as f:
@@ -134,7 +157,6 @@ class Advent:
                     res.part1 = ans
 
         res.time = 1000 * (end_time - start_time)
-
         return res
     
 
@@ -145,30 +167,6 @@ class Advent:
             latest = self._run_single(day_number, input_path, hide) 
             time += latest.time
         return Result(day_number, time / num_runs, hide, latest.part1, latest.part2)
-
-
-    def run(self, day_number: int, input_path: str=None, num_runs: int=1, hide: bool=False):
-        if day_number not in self._days \
-            and (day_number, 1) not in self._days \
-            and (day_number, 2) not in self._days:
-            raise DayNotFoundException(f'Day {day_number} solution not found')
-
-        if num_runs == 1:
-            return self._run_single(day_number, input_path, hide)
-        return self._run_multi(day_number, input_path, num_runs, hide)
-
-    
-    def run_all(self, num_runs: int=1, hide: bool=False):
-        days = set()
-        for d in self._days.keys():
-            if isinstance(d, tuple):
-                days.add(d[0])
-            else:
-                days.add(d)
-        results = []
-        for d in days:
-            results.append(self.run(d, num_runs=num_runs, hide=hide))
-        return results
     
 
 advent = Advent()

@@ -1,6 +1,7 @@
 import os
 import requests
 from datetime import datetime
+from pathlib import Path
 
 from lib import constants
 
@@ -10,12 +11,13 @@ def download(day_number: int):
     if now < datetime(constants.YEAR, constants.MONTH, day_number):
         raise Exception(f'Too early to download day {day_number}')
     try:
-        filename = os.path.join('inputs', f'd{day_number:0>2}.in')
-        if not os.path.exists('inputs'):
-            os.mkdir('inputs')
-        if os.path.exists(filename):
-            _print_file(filename)
-            print(f'File {filename} exists')
+        # filename = os.path.join('inputs', f'd{day_number:0>2}.in')
+        filepath = Path('inputs') / f'd{day_number:0>2}.in'
+        if not filepath.parent.exists('inputs'):
+            filepath.parent.mkdir()
+        if filepath.exists():
+            _print_file(filepath)
+            print(f'File {filepath} exists')
         else:
             response = requests.get(
                 f'{constants.URL}/day/{day_number}/input',
@@ -34,9 +36,9 @@ def download(day_number: int):
                     case 404: print(f'Too soon, try again later')
                 response.raise_for_status()
 
-            _create_file(filename, response.text)
-            _print_file(filename)
-            print(f'File saved as {filename}')
+            _create_file(filepath, response.text)
+            _print_file(filepath)
+            print(f'File saved as {filepath}')
 
     except KeyError as e:
         print(f'Missing environment variable {e}')
