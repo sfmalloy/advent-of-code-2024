@@ -1,6 +1,6 @@
 # Advent of Code 2024
 
-These solutions are written in Python 3 using CPython 3.12. This uses a small runner library I mostly wrote in 2023 (https://github.com/sfmalloy/advent-of-code-2023/) that automatically downloads and caches input and can do things like run from test input files. The only thing it does not do is submit answers. You can run either a single day to get its answer and runtime, or run all the available days and get their combined runtime.
+These are my solutions for [Advent of Code 2024](https://adventofcode.com/2024)! They are written in Python 3 using CPython 3.12. This uses a small runner library I mostly wrote in 2023 (https://github.com/sfmalloy/advent-of-code-2023/) that automatically downloads and caches input and can do things like run from test input files. The only thing it does not do is submit answers. You can run either a single day to get its answer and runtime, or run all the available days and get their combined runtime.
 
 ## Commands
 
