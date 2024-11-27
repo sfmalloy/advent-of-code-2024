@@ -1,4 +1,4 @@
-YEAR = 2023
+YEAR = 2024
 MONTH = 12
 URL = f'https://adventofcode.com/{YEAR}'
 
