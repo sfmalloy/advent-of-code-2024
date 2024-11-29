@@ -71,9 +71,28 @@ class Vec2:
 
     def normalized(self):
         return self / self.magnitude()
+    
+    def in_bounds_xy(self, grid: list[list[Any]], lower_limit_x=0, lower_limit_y=0, upper_limit_x=None, upper_limit_y=None):
+        '''
+        NOTE: limits are `[lower, upper]`
+        '''
+        return (
+            self.x >= lower_limit_x
+            and self.y >= lower_limit_y
+            and self.x < (upper_limit_x if upper_limit_x else len(grid[self.y]))
+            and self.y < (upper_limit_y if upper_limit_y else len(grid))
+        )
 
-    def in_bounds(self, grid: list[list[Any]]):
-        return self.r >= 0 and self.c >= 0 and self.r < len(grid) and self.c < len(grid[self.r])
+    def in_bounds_rc(self, grid: list[list[Any]], lower_limit_r=0, lower_limit_c=0, upper_limit_r=None, upper_limit_c=None):
+        '''
+        NOTE: limits are `[lower, upper]`
+        '''
+        return (
+            self.r >= lower_limit_r
+            and self.c >= lower_limit_c
+            and self.r < (upper_limit_r if upper_limit_r else len(grid))
+            and self.c < (upper_limit_c if upper_limit_c else len(grid[self.r]))
+        )
 
     def __repr__(self) -> str:
         return f'({self.x}, {self.y})'
