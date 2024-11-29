@@ -79,7 +79,7 @@ class Vec2:
         return f'({self.x}, {self.y})'
 
 
-class VecDir:
+class XYDir:
     N = Vec2(0, 1)
     S = Vec2(0, -1)
     E = Vec2(1, 0)
@@ -101,14 +101,14 @@ class VecDir:
 
     @staticmethod
     def opposite(d: Self):
-        return VecDir._opposite[d]
+        return XYDir._opposite[d]
 
     @staticmethod
     def all():
-        return VecDir._all
+        return XYDir._all
 
 
-class PointDir:
+class RCDir:
     N = Vec2(-1, 0)
     S = Vec2(1, 0)
     E = Vec2(0, 1)
@@ -130,8 +130,8 @@ class PointDir:
 
     @staticmethod
     def opposite(d: Self):
-        return PointDir._opposite[d]
+        return RCDir._opposite[d]
 
     @staticmethod
     def all():
-        return PointDir._all
+        return RCDir._all
