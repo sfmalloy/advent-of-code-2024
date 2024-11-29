@@ -95,15 +95,15 @@ class Advent:
         return parser_decorator
 
 
-    def run(self, day_number: int, input_path: str=None, num_runs: int=1, hide: bool=False):
+    def run(self, day_number: int, input_path: str=None, num_runs: int=1, hide: bool=False, part: Optional[int]=None):
         if day_number not in self._days \
             and (day_number, 1) not in self._days \
             and (day_number, 2) not in self._days:
             raise DayNotFoundException(f'Day {day_number} solution not found')
 
         if num_runs == 1:
-            return self._run_single(day_number, input_path, hide)
-        return self._run_multi(day_number, input_path, num_runs, hide)
+            return self._run_single(day_number, input_path, hide, part)
+        return self._run_multi(day_number, input_path, num_runs, hide, part)
 
     
     def run_all(self, num_runs: int=1, hide: bool=False):
@@ -119,26 +119,28 @@ class Advent:
         return results
 
 
-    def _run_single(self, day_number: int, input_path: str, hide: bool) -> Result:
+    def _run_single(self, day_number: int, input_path: str, hide: bool, part: Optional[int]) -> Result:
         path = Path(input_path) if input_path else Path('inputs') / f'd{day_number:0>2}.in'
         if not path.exists():
             download(day_number)
 
         res = Result(day_number, hide=hide)
-        with open(input_path) as f:
+        with open(path) as f:
             if day_number not in self._days:
                 start_time = timer()
                 ipt = f
-                if (day_number, 1) in self._days:
+                if (day_number, 1) in self._days and part != 2:
                     if day_number in self._parsers:
                         ipt = self._parsers[day_number](f)
                     res.part1 = self._days[(day_number, 1)](ipt)
-                if (day_number, 2) in self._days:
+                if (day_number, 2) in self._days and part != 1:
                     if self._attrs[day_number].reparse:
                         f.seek(0, 0)
                         if day_number in self._parsers:
                             ipt = self._parsers[day_number](f)
                     if self._attrs[day_number].use_part1:
+                        if not res.part1:
+                            res.part1 = self._days[(day_number, 1)](ipt)
                         res.part2 = self._days[(day_number, 2)](ipt, res.part1)
                     else:
                         res.part2 = self._days[(day_number, 2)](ipt)
@@ -151,8 +153,10 @@ class Advent:
                 ans = self._days[day_number](ipt)
                 end_time = timer()
                 if isinstance(ans, tuple):
-                    res.part1 = ans[0]
-                    res.part2 = ans[1]
+                    if part != 2:
+                        res.part1 = ans[0]
+                    if part != 1:
+                        res.part2 = ans[1]
                 elif ans:
                     res.part1 = ans
 
@@ -160,11 +164,11 @@ class Advent:
         return res
     
 
-    def _run_multi(self, day_number: int, input_path: str, num_runs: int, hide: bool) -> Result:
+    def _run_multi(self, day_number: int, input_path: str, num_runs: int, hide: bool, part: Optional[int]) -> Result:
         time = 0
         latest = None
         for _ in range(num_runs):
-            latest = self._run_single(day_number, input_path, hide) 
+            latest = self._run_single(day_number, input_path, hide, part) 
             time += latest.time
         return Result(day_number, time / num_runs, hide, latest.part1, latest.part2)
     

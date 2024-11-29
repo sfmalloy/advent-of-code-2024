@@ -13,7 +13,7 @@ def download(day_number: int):
     try:
         # filename = os.path.join('inputs', f'd{day_number:0>2}.in')
         filepath = Path('inputs') / f'd{day_number:0>2}.in'
-        if not filepath.parent.exists('inputs'):
+        if not filepath.parent.exists():
             filepath.parent.mkdir()
         if filepath.exists():
             _print_file(filepath)
