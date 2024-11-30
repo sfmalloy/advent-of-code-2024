@@ -51,8 +51,6 @@ def print_table(outputs: list[Result]):
         if p2:
             end += f'┴{"─"*(widths.p2)}'
         end += f'┴{"─"*(widths.time)}╯'
-        # end += print(f'╰{"─"*(widths.day)}┴{"─"*(width+2)}┴{"─"*(width2+2)}┴{"─"*(time_width+2)}╯')
- 
 
     print(header, end='')
     print((_build_separator(widths, p1, p2)).join(middle), end='')
