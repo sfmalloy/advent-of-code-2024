@@ -15,18 +15,19 @@ python run.py -a
 ```
 
 ### All flags
-```
--h, --help                        Show help message.
--d DAY, --day DAY                 Runs day <d>. If -f is not specified, the regular puzzle input is used as input.
--a, --all                         Run all days.
--f FILE, --file FILE              Specify different input file from default.
--t, --test                        Shorthand for -f test.in. Overrides -f argument.
--n NUM_RUNS, --numruns NUM_RUNS   Specify number of runs to get an average time.
--x, --hide                        Hide answers from output table, only showing day number and runtime.
--i, --input                       Download if not cached and print input for the given day.
--g, --generate                    Generate template solution file for the given day.
--p {1,2}, --part {1,2}            Part number to run. If part 2 depends on part 1, then part 1 is still run but only part 2 is output.
-```
+|Flag|Description|
+|:-|:-|
+|`-h, --help`|Show help message.|
+|`-d DAY, --day DAY`|Runs day <d>. If -f is not specified, the regular puzzle input is used as input.|
+|`-a, --all`|Run all days.|
+|`-f FILE, --file FILE`|Specify different input file from default.|
+|`-t, --test`|Shorthand for -f test.in. Overrides -f argument.|
+|`-n NUM_RUNS, --numruns NUM_RUNS`|Specify number of runs to get an average time.|
+|`-x, --hide`|Hide answers from output table, only showing day number and runtime.|
+|`-i, --input`|Download if not cached and print input for the given day.|
+|`-g, --generate`|Generate template solution file for the given day.|
+|`-p {1,2}, --part {1,2}`|Part number to run. If part 2 depends on part 1, then part 1 is still run but only part 2 is output.|
+
 ## Dependencies
 The solutions themselves (unless otherwise stated later) rely only on whatever is in the Python standard library at the time. The runner library uses some outside dependencies for downloading input and loading environment variables. To install simply run:
 ```
