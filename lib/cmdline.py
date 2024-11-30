@@ -26,11 +26,11 @@ def load_arguments() -> AdventNamespace:
     parser.add_argument('-n', '--numruns', dest='num_runs', default=1, type=int,
                         help='Specify number of runs to get an average time.')
     parser.add_argument('-x', '--hide', action='store_true', dest='hide', default=False,
-                        help='Replace answer output with a bunch of X\'s.')
+                        help='Hide answers from output table, only showing day number and runtime.')
     parser.add_argument('-i', '--input', action='store_true', dest='download_input', default=False,
-                        help='Only download/print input for day.')
+                        help='Download if not cached and print input for the given day.')
     parser.add_argument('-g', '--generate', action='store_true', dest='generate_day', default=False,
-                        help='Generate template solution file for given day,')
+                        help='Generate template solution file for the given day.')
     parser.add_argument('-p', '--part', dest='part', type=int, choices=[1, 2],
                         help='Part number to run. If part 2 depends on part 1, then part 1 is still run but only part 2 is output.')
 

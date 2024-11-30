@@ -94,7 +94,7 @@ class Advent:
         self._attrs = {}
 
 
-    def day(self, day_number: int, part: int=0, use_part1: bool=False, reparse: bool=True):
+    def solver(self, day_number: int, part: int=0, use_part1: bool=False, reparse: bool=True):
         if day_number in self._days:
             raise DuplicateKeyError(day_number)
         elif (day_number, part) in self._days:
@@ -102,7 +102,7 @@ class Advent:
         '''
         Decorator for a function that is a problem solution.
         '''
-        def day_decorator(fn: Callable):
+        def solver_decorator(fn: Callable):
             self._attrs[day_number] = Attribute(
                 use_part1=use_part1,
                 reparse=reparse
@@ -112,7 +112,7 @@ class Advent:
             else:
                 self._days[day_number] = fn
 
-        return day_decorator
+        return solver_decorator
 
     def parser(self, day_number: int):
         '''

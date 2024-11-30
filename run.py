@@ -17,7 +17,12 @@ def main():
     args = load_arguments()
     if args.day:
         if args.generate_day:
-            generate_new_file(args.day)
+            path = Path('solutions') / f'd{args.day:0>2}.py'
+            if not path.parent.exists():
+                path.parent.mkdir()
+            if not path.exists():
+                with open(path, 'w') as f:
+                    f.write(constants.solution_template(args.day))
         if args.download_input:
             res = download(args.day)
         if not args.download_input and not args.generate_day:
@@ -27,21 +32,6 @@ def main():
     elif args.run_all:
         res = advent.run_all(args.num_runs, args.hide)
         print_table(res)
-
-
-def day_num_file(day_num) -> str:
-    if day_num < 10:
-        return f'0{day_num}'
-    return f'{day_num}'
-
-
-def generate_new_file(day_number):
-    path = Path('solutions') / f'd{day_number:0>2}.py'
-    if not path.parent.exists():
-        path.parent.mkdir()
-    if not path.exists():
-        with open(path, 'w') as f:
-            f.write(constants.solution_template(day_number))
 
 
 if __name__ == '__main__':

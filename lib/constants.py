@@ -13,12 +13,12 @@ def parse(file: TextIOWrapper):
     return lines
 
 
-@advent.day({day_number}, part=1)
+@advent.solver({day_number}, part=1)
 def solve1(ipt):
     return 0
 
 
-@advent.day({day_number}, part=2)
+@advent.solver({day_number}, part=2)
 def solve2(ipt):
     return 0
 '''
