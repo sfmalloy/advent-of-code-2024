@@ -18,10 +18,10 @@ python run.py -a
 |Flag|Description|
 |:-|:-|
 |`-h, --help`|Show help message.|
-|`-d DAY, --day DAY`|Runs day <d>. If -f is not specified, the regular puzzle input is used as input.|
+|`-d DAY, --day DAY`|Runs day <d>. If `-f` is not specified, the regular puzzle input is used as input.|
 |`-a, --all`|Run all days.|
 |`-f FILE, --file FILE`|Specify different input file from default.|
-|`-t, --test`|Shorthand for -f test.in. Overrides -f argument.|
+|`-t, --test`|Shorthand for `-f test.in`. Overrides `-f` argument.|
 |`-n NUM_RUNS, --numruns NUM_RUNS`|Specify number of runs to get an average time.|
 |`-x, --hide`|Hide answers from output table, only showing day number and runtime.|
 |`-i, --input`|Download if not cached and print input for the given day.|
