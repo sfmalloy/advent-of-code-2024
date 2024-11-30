@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from io import TextIOWrapper
 from pathlib import Path
 from timeit import default_timer as timer
@@ -24,19 +24,19 @@ class Result:
     day: int
     time: float = 0
     hide: bool = False
-    _part1: Optional[Any] = None
-    _part2: Optional[Any] = None
+    _part1: Optional[Any] = field(default=None, init=False)
+    _part2: Optional[Any] = field(default=None, init=False)
 
     @property
-    def part1(self):
-        if self.hide:
-            return 'X'*min(40, len(str(self._part1)))
+    def part1(self) -> Any:
+        if self.hide and self._part1:
+            return None
         return self._part1
     
     @property
-    def part2(self):
-        if self.hide:
-            return 'X'*min(40, len(str(self._part2)))
+    def part2(self) -> Any:
+        if self.hide and self._part2:
+            return None
         return self._part2
     
     @part1.setter
@@ -46,6 +46,35 @@ class Result:
     @part2.setter
     def part2(self, v):
         self._part2 = v
+    
+    @property
+    def part1_line_length(self):
+        return self._line_length(self.part1)
+
+    @property
+    def part2_line_length(self):
+        return self._line_length(self.part2)
+
+    @property
+    def part1_num_lines(self):
+        return self._num_lines(self.part1)
+
+    @property
+    def part2_num_lines(self):
+        return self._num_lines(self.part2)
+    
+    def _line_length(self, part: Any) -> int:
+        if not part:
+            return 4
+        l = 0
+        for line in str(part).splitlines():
+            l = max(l, len(line.strip()))
+        return l
+
+    def _num_lines(self, part: Any) -> int:
+        if not self.part1:
+            return 1
+        return len(str(part).splitlines())
 
 
 @dataclass
@@ -105,7 +134,7 @@ class Advent:
             return self._run_single(day_number, input_path, hide, part)
         return self._run_multi(day_number, input_path, num_runs, hide, part)
 
-    
+
     def run_all(self, num_runs: int=1, hide: bool=False):
         days = set()
         for d in self._days.keys():
@@ -132,25 +161,25 @@ class Advent:
                 if (day_number, 1) in self._days and part != 2:
                     if day_number in self._parsers:
                         ipt = self._parsers[day_number](f)
-                    res.part1 = self._days[(day_number, 1)](ipt)
+                    res.part1 = self._call_runner_fn(self._days[(day_number, 1)], ipt)
                 if (day_number, 2) in self._days and part != 1:
-                    if self._attrs[day_number].reparse:
+                    if self._attrs[day_number].reparse or part == 2:
                         f.seek(0, 0)
                         if day_number in self._parsers:
                             ipt = self._parsers[day_number](f)
                     if self._attrs[day_number].use_part1:
                         if not res.part1:
-                            res.part1 = self._days[(day_number, 1)](ipt)
-                        res.part2 = self._days[(day_number, 2)](ipt, res.part1)
+                            res.part1 = self._call_runner_fn(self._days[(day_number, 1)], ipt)
+                        res.part2 = self._call_runner_fn(self._days[(day_number, 2)], ipt, res.part1)
                     else:
-                        res.part2 = self._days[(day_number, 2)](ipt)
+                        res.part2 = self._call_runner_fn(self._days[(day_number, 2)], ipt)
                 end_time = timer()
             else:
                 start_time = timer()
                 ipt = f
                 if day_number in self._parsers:
                     ipt = self._parsers[day_number](f)
-                ans = self._days[day_number](ipt)
+                ans = self._call_runner_fn(self._days[day_number], ipt)
                 end_time = timer()
                 if isinstance(ans, tuple):
                     if part != 2:
@@ -163,6 +192,16 @@ class Advent:
         res.time = 1000 * (end_time - start_time)
         return res
     
+    
+    def _call_runner_fn(self, fn: Callable, ipt: Any, part1: Optional[Any]=None):
+        if part1:
+            if isinstance(ipt, tuple):
+                return fn(*ipt, part1)
+            return fn(ipt, part1)
+        if isinstance(ipt, tuple):
+            return fn(*ipt)
+        return fn(ipt)
+
 
     def _run_multi(self, day_number: int, input_path: str, num_runs: int, hide: bool, part: Optional[int]) -> Result:
         time = 0

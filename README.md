@@ -14,15 +14,18 @@ python run.py -d <day_number>
 python run.py -a
 ```
 
-### Other flags
+### All flags
 ```
 -h, --help                          Show help message.
+-d DAY, --day DAY                   Runs day <d>. If -f is not specified, the regular puzzle input is used as input.
+-a, --all                           Run all days.
 -f <filepath>, --file <filepath>    Specify different input file from default.
 -t, --test                          Shorthand for -f test.in. Overrides -f argument.
 -n <number>, --numruns <number>     Specify number of runs to get an average time.
 -x, --hide                          Replace answer output with a bunch of X's.
 -i, --input                         Download/print input for day and do not run the solution.
 -g, --generate                      Generate template solution file for given day.
+-p {1,2}, --part {1,2}              Part number to run. If part 2 depends on part 1, then part 1 is still run but only part 2 is output.
 ```
 
 ## Dependencies
@@ -64,7 +67,27 @@ def day1(lines: list[str]):
     lines = file.readlines()
     # ...do something with the input and set return values
     return part1, part2
+```
 
+An input parser can also return multiple arguments in a tuple, and be passed as seperate arguments to each part. For example:
+```py
+from lib.advent import advent
+from io import TextIOWrapper
+
+@advent.parser(1)
+def parse(file: TextIOWrapper) -> list[str]:
+    lines = file.readlines()
+    a = lines[0]
+    b = int(lines[1])
+    return a, b
+
+
+@advent.day(1, part=1)
+def solve(a: str, b: int):
+    # ...do something with the input and set return values
+    return part1
+
+# ...similar layout for part 2
 ```
 
 Another way to organize your solvers is have seperate functions for parts 1 and 2. All you need to do is declare in the decorator what part each function is solving. **The input is freshly parsed between calls to part 1 and 2 functions unless otherwise specified** (see [Solution Attributes](#solution-attributes)).
