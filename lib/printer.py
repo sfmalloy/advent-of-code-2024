@@ -11,7 +11,7 @@ class PrintWidths:
         self.p1 = 0
         self.p2 = 0
         self.day = 12 if (multiple and not (p1 or p2)) else 7
-        self.time = 14
+        self.time = 13
 
 
 def print_table(outputs: list[Result]):
@@ -57,17 +57,9 @@ def print_table(outputs: list[Result]):
     print(end)
 
 
-def _start_line(v: int, l: int):
-    return (v-l) // 2
-
-
-def _end_line(v: int, l: int):
-    return (v-l) // 2 + l
-
-
 def _build_line(i: int, v: int, lines: list[str], width: int):
-    start = _start_line(v, len(lines))
-    end = _end_line(v, len(lines))
+    start = (v-len(lines)) // 2
+    end = start + len(lines)
     if i >= start and i < end:
         return f'│ {lines[i-start]:>{width-2}} '
     return f'│{' ':>{width}}'

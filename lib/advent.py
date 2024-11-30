@@ -72,7 +72,7 @@ class Result:
         return l
 
     def _num_lines(self, part: Any) -> int:
-        if not self.part1:
+        if not part:
             return 1
         return len(str(part).splitlines())
 

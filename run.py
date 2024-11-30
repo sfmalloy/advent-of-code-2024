@@ -4,7 +4,7 @@ from pathlib import Path
 from requests import HTTPError
 from dotenv import load_dotenv
 
-from lib.advent import advent, DayNotFoundException, DuplicateKeyError, Result
+from lib.advent import advent, DayNotFoundException, DuplicateKeyError
 from lib.api import download
 from lib.cmdline import load_arguments
 from lib.printer import print_table
