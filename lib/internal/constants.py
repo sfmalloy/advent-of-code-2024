@@ -3,7 +3,7 @@ MONTH = 12
 URL = f'https://adventofcode.com/{YEAR}'
 
 def solution_template(day_number: int) -> str:
-    return f'''from lib.advent import advent
+    return f'''from lib import advent
 from io import TextIOWrapper
 from collections import deque, defaultdict
 

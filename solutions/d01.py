@@ -1,10 +1,10 @@
-from lib.advent import advent
+from lib import advent
 from io import TextIOWrapper
 from collections import defaultdict
 
 
 @advent.parser(1)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> tuple[list[int], list[int]]:
     left = []
     right = []
     for line in file.readlines():

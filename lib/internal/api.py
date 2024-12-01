@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 from pathlib import Path
 
-from lib import constants
+from lib.internal import constants
 
 
 def download(day_number: int):

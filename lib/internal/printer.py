@@ -1,4 +1,4 @@
-from lib.advent import Result
+from lib.internal.runner import Result
 
 
 class PrintWidths:

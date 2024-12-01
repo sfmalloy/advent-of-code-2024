@@ -35,13 +35,13 @@ pip install -r requirements.txt
 ```
 
 ## Solution Layout
-This library can dynamically add solutions (solver functions) without modifying `run.py`. You simply import the global `advent` object (from the local `lib.advent` module), and use a decorator to mark your function as a solver.
+This library can dynamically add solutions (solver functions) without modifying `run.py`. You simply import the global `advent` object (from the local `lib` module), and use a decorator to mark your function as a solver.
 
 Your solver function must accept at least one parameter which either is the file input of type `TextIOWrapper`, OR input parsed in a way that you define in a custom parser function (examples shown below). 
 
 ### Without parser function:
 ```py
-from lib.advent import advent
+from lib import advent
 from io import TextIOWrapper
 
 
@@ -54,7 +54,7 @@ def solve(file: TextIOWrapper):
 
 ### With custom parser:
 ```py
-from lib.advent import advent
+from lib import advent
 from io import TextIOWrapper
 
 @advent.parser(1)
@@ -71,7 +71,7 @@ def solve(lines: list[str]):
 
 An input parser can also return multiple arguments in a tuple, and be passed as seperate arguments to each solver for that day. For example:
 ```py
-from lib.advent import advent
+from lib import advent
 from io import TextIOWrapper
 
 @advent.parser(1)
@@ -90,7 +90,7 @@ def solve(a: str, b: int):
 Another way to organize your solvers is have seperate functions for parts 1 and 2. All you need to do is declare in the decorator what part each function is solving. **The input is freshly parsed between calls to part 1 and 2 solvers unless otherwise specified** (see [Solution Attributes](#solution-attributes)).
 
 ```py
-from .lib.advent import advent
+from lib import advent
 from io import TextIOWrapper
 
 

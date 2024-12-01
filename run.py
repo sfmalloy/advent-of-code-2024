@@ -4,11 +4,11 @@ from pathlib import Path
 from requests import HTTPError
 from dotenv import load_dotenv
 
-from lib.advent import advent, DayNotFoundException, DuplicateKeyError
-from lib.api import download
-from lib.cmdline import load_arguments
-from lib.printer import print_table
-from lib import constants
+from lib import constants, advent
+from lib.internal.runner import DayNotFoundException, DuplicateKeyError
+from lib.internal.api import download
+from lib.internal.cmdline import load_arguments
+from lib.internal.printer import print_table
 
 
 def main():

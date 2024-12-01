@@ -4,7 +4,7 @@ from pathlib import Path
 from timeit import default_timer as timer
 from typing import Callable, Any, Optional
 
-from lib.api import download
+from lib.internal.api import download
 
 
 class DayNotFoundException(Exception):
@@ -210,6 +210,3 @@ class Advent:
             latest = self._run_single(day_number, input_path, hide, part) 
             time += latest.time
         return Result(day_number, time / num_runs, hide, latest.part1, latest.part2)
-    
-
-advent = Advent()
