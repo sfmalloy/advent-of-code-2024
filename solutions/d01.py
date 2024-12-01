@@ -5,13 +5,13 @@ from collections import defaultdict
 
 @advent.parser(1)
 def parse(file: TextIOWrapper):
-    a = []
-    b = []
+    left = []
+    right = []
     for line in file.readlines():
-        x, y = map(int, line.split())
-        a.append(x)
-        b.append(y)
-    return sorted(a), sorted(b)
+        l, r = map(int, line.split())
+        left.append(l)
+        right.append(r)
+    return sorted(left), sorted(right)
 
 
 @advent.solver(1, part=1)
@@ -19,7 +19,7 @@ def solve1(left: list[int], right: list[int]) -> int:
     return sum(abs(l - r) for l, r in zip(left, right))
 
 
-@advent.solver(1, part=2)
+@advent.solver(1, part=2, reparse=False)
 def solve2(left: list[int], right: list[int]) -> int:
     counts = defaultdict(int)
     for r in right:
