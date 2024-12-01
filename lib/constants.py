@@ -3,9 +3,10 @@ MONTH = 12
 URL = f'https://adventofcode.com/{YEAR}'
 
 def solution_template(day_number: int) -> str:
-    return f'''from io import TextIOWrapper
-from dataclasses import dataclass
-from lib.advent import advent
+    return f'''from lib.advent import advent
+from io import TextIOWrapper
+from collections import deque, defaultdict
+
 
 @advent.parser({day_number})
 def parse(file: TextIOWrapper):

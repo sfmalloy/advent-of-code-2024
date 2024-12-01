@@ -1,5 +1,7 @@
-from io import TextIOWrapper
 from lib.advent import advent
+from io import TextIOWrapper
+from collections import defaultdict
+
 
 @advent.parser(1)
 def parse(file: TextIOWrapper):
@@ -13,16 +15,13 @@ def parse(file: TextIOWrapper):
 
 
 @advent.solver(1, part=1)
-def solve1(a: list[int], b: list[int]) -> int:
-    t = 0
-    for x, y in zip(a, b):
-        t += abs(y-x)
-    return t
+def solve1(left: list[int], right: list[int]) -> int:
+    return sum(abs(l - r) for l, r in zip(left, right))
 
 
 @advent.solver(1, part=2)
-def solve2(a: list[int], b: list[int]) -> int:
-    t = 0
-    for x in a:
-        t += x * b.count(x)
-    return t
+def solve2(left: list[int], right: list[int]) -> int:
+    counts = defaultdict(int)
+    for r in right:
+        counts[r] += 1
+    return sum(l * counts[l] for l in left)
