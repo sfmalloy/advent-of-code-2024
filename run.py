@@ -4,7 +4,8 @@ from pathlib import Path
 from requests import HTTPError
 from dotenv import load_dotenv
 
-from lib import constants, advent
+from lib import advent
+from lib.internal import constants
 from lib.internal.runner import DayNotFoundException, DuplicateKeyError
 from lib.internal.api import download
 from lib.internal.cmdline import load_arguments
