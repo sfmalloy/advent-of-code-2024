@@ -11,7 +11,6 @@ def download(day_number: int):
     if now < datetime(constants.YEAR, constants.MONTH, day_number):
         raise Exception(f'Too early to download day {day_number}')
     try:
-        # filename = os.path.join('inputs', f'd{day_number:0>2}.in')
         filepath = Path('inputs') / f'd{day_number:0>2}.in'
         if not filepath.parent.exists():
             filepath.parent.mkdir()
@@ -39,7 +38,6 @@ def download(day_number: int):
             _create_file(filepath, response.text)
             _print_file(filepath)
             print(f'File saved as {filepath}')
-
     except KeyError as e:
         print(f'Missing environment variable {e}')
         raise
