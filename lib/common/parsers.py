@@ -1,5 +1,5 @@
 from io import TextIOWrapper
 
 
-def intlist(strings: list[str]):
-    return list(map(int, strings))
+def intlist(string: str, delim=None):
+    return list(map(int, string.split(delim)))

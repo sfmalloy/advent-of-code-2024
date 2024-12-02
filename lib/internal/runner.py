@@ -209,4 +209,7 @@ class Advent:
         for _ in range(num_runs):
             latest = self._run_single(day_number, input_path, hide, part) 
             time += latest.time
-        return Result(day_number, time / num_runs, hide, latest.part1, latest.part2)
+        res = Result(day_number, time / num_runs, hide)
+        res.part1 = latest.part1
+        res.part2 = latest.part2
+        return res
