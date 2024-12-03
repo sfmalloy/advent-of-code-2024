@@ -1,6 +1,8 @@
 import re
+import operator
 from lib import advent
 from io import TextIOWrapper
+from functools import reduce
 
 
 @advent.parser(3)
@@ -10,11 +12,7 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(3, part=1)
 def solve1(prog: str):
-    ans = 0
-    for mul in re.finditer(r'mul\((\d+),(\d+)\)', prog):
-        a, b = map(int, mul.groups())
-        ans += a * b
-    return ans
+    return sum(reduce(operator.mul, map(int, mul.groups())) for mul in re.finditer(r'mul\((\d+),(\d+)\)', prog))
 
 
 @advent.solver(3, part=2, reparse=False)
