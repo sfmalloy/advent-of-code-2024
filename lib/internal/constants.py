@@ -1,6 +1,7 @@
 YEAR = 2024
 MONTH = 12
 URL = f'https://adventofcode.com/{YEAR}'
+USER_AGENT = f'email:sfmalloy.dev@gmail.com repo:https://github.com/sfmalloy/advent-of-code-{YEAR}'
 
 def solution_template(day_number: int) -> str:
     return f'''from lib import advent

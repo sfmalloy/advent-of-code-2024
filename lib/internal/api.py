@@ -10,6 +10,8 @@ def download(day_number: int):
     now = datetime.now()
     if now < datetime(constants.YEAR, constants.MONTH, day_number):
         raise Exception(f'Too early to download day {day_number}')
+    if not os.getenv('AOC_SESSION'):
+        raise Exception('AOC_SESSION environment variable not found')
     try:
         filepath = Path('inputs') / f'd{day_number:0>2}.in'
         if not filepath.parent.exists():
@@ -21,7 +23,7 @@ def download(day_number: int):
             response = requests.get(
                 f'{constants.URL}/day/{day_number}/input',
                 headers={
-                    'User-Agent': os.getenv('AOC_USER_AGENT')
+                    'User-Agent': constants.USER_AGENT
                 },
                 cookies={
                     'session': os.getenv('AOC_SESSION')
