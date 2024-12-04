@@ -10,11 +10,12 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(4, part=1)
 def solve1(lines: list[str]):
-    count = search_horiz(lines)
-    count += search_horiz(list(''.join(line) for line in zip(*lines)))
-    count += search_diag(lines)
-    count += search_diag([line[::-1] for line in lines])
-    return count
+    return sum([
+        search_horiz(lines),
+        search_horiz(list(''.join(line) for line in zip(*lines))),
+        search_diag(lines),
+        search_diag([line[::-1] for line in lines])
+    ])
 
 
 @advent.solver(4, part=2, reparse=False)
