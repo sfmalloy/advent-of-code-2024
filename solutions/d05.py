@@ -40,9 +40,3 @@ def check_update(rules: defaultdict[int, list], update: list[int]):
             if before in rules[page]:
                 return False
     return True
-
-
-def swap(update: list[int], i: int, j: int):
-    tmp = update[i]
-    update[i] = update[j]
-    update[j] = tmp
