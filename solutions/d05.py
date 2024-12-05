@@ -1,6 +1,7 @@
 from lib import advent
 from io import TextIOWrapper
 from collections import defaultdict
+from functools import cmp_to_key
 
 
 @advent.parser(5)
@@ -29,16 +30,7 @@ def solve2(rules: defaultdict[int, list], updates: list[list[int]]):
     ans = 0
     for update in updates:
         if not check_update(rules, update):
-            p = 0
-            while p < len(update):
-                page = update[p]
-                for b, before in enumerate(update[p+1:], start=p+1):
-                    if before in rules[page]:
-                        swap(update, p, b)
-                        p -= 1
-                        break
-                p += 1
-            ans += update[len(update)//2]
+            ans += sorted(update, key=cmp_to_key(lambda p, b: -1 if b in rules[p] else 0))[len(update)//2]
     return ans
 
 
