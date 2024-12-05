@@ -1,6 +1,6 @@
 from lib import advent
 from io import TextIOWrapper
-from collections import deque, defaultdict
+from collections import defaultdict
 
 
 @advent.parser(5)
