@@ -1,4 +1,5 @@
 from lib import advent
+
 from io import TextIOWrapper
 from collections import defaultdict
 

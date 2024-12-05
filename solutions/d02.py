@@ -1,6 +1,7 @@
 from lib import advent
-from io import TextIOWrapper
 from lib.common.parsers import intlist
+
+from io import TextIOWrapper
 from itertools import pairwise, compress
 
 
@@ -15,18 +16,19 @@ def solve1(reports: list[list[int]]) -> int:
 
 
 @advent.solver(2, part=2, reparse=False, use_part1=True)
-def solve2(reports: list[list[int]], part1: int):
+def solve2(reports: list[list[int]], part1: int) -> int:
     return part1 + sum(
-        (any(test(unsafe[:i] + unsafe[i+1:], True) for i in range(len(unsafe)))) 
+        (any(test(unsafe[:i] + unsafe[i+1:], True)
+         for i in range(len(unsafe))))
         for unsafe in compress(reports, find_reports(reports, False))
     )
 
 
-def find_reports(reports: list[list[int]], safe: bool):
+def find_reports(reports: list[list[int]], safe: bool) -> list[int]:
     return [test(levels, safe) for levels in reports]
 
 
-def test(levels: list[int], safe: bool):
+def test(levels: list[int], safe: bool) -> int:
     # I just wanted to do this in one line and use an itertool I never use
     # ...it's not that efficient
     return (

@@ -3,23 +3,22 @@ from io import TextIOWrapper
 
 
 @advent.parser(4)
-def parse(file: TextIOWrapper):
-    lines = [line.strip() for line in file.readlines()]
-    return lines
+def parse(file: TextIOWrapper) -> list[str]:
+    return [line.strip() for line in file.readlines()]
 
 
 @advent.solver(4, part=1)
-def solve1(lines: list[str]):
-    return sum([
-        search_horiz(lines),
-        search_horiz(list(''.join(line) for line in zip(*lines))),
-        search_diag(lines),
-        search_diag([line[::-1] for line in lines])
-    ])
+def solve1(lines: list[str]) -> int:
+    return (
+        search_horiz(lines)
+        + search_horiz(list(''.join(line) for line in zip(*lines)))
+        + search_diag(lines)
+        + search_diag([line[::-1] for line in lines])
+    )
 
 
 @advent.solver(4, part=2, reparse=False)
-def solve2(lines: list[str]):
+def solve2(lines: list[str]) -> int:
     count = 0
     VALID = {'MSSM', 'SSMM', 'MMSS', 'SMMS'}
     for i in range(1, len(lines)-1):

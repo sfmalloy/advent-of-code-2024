@@ -11,8 +11,7 @@ from collections import deque, defaultdict
 
 @advent.parser({day_number})
 def parse(file: TextIOWrapper):
-    lines = [line.strip() for line in file.readlines()]
-    return lines
+    return [line.strip() for line in file.readlines()]
 
 
 @advent.solver({day_number}, part=1)
