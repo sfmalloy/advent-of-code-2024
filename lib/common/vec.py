@@ -5,33 +5,49 @@ from math import sqrt
 
 @dataclass(frozen=True, eq=True, order=True)
 class Vec2:
-    x: int
-    y: int
+    x_or_r: int
+    y_or_c: int
+
+    @property
+    def x(self):
+        return self.x_or_r
+    
+    @property
+    def y(self):
+        return self.y_or_c
 
     @property
     def r(self):
-        return self.x
+        return self.x_or_r
 
     @property
     def c(self):
-        return self.y
+        return self.y_or_c
     
+    @x.setter
+    def x(self, v):
+        self.x_or_r = v
+    
+    @y.setter
+    def y(self, v):
+        self.y_or_c = v
+
     @r.setter
     def r(self, v):
-        self.x = v
+        self.x_or_r = v
     
     @c.setter
     def c(self, v):
-        self.y = v
+        self.y_or_c = v
 
     def __add__(self, other: Self):
-        return Vec2(self.x + other.x, self.y + other.y)
+        return Vec2(self.x_or_r + other.x_or_r, self.y_or_c + other.y_or_c)
     
     def __sub__(self, other: Self):
-        return Vec2(self.x - other.x, self.y - other.y)
+        return Vec2(self.x_or_r - other.x_or_r, self.y_or_c - other.y_or_c)
 
     def __mul__(self, other: int):
-        return Vec2(self.x * other, self.y * other)
+        return Vec2(self.x_or_r * other, self.y_or_c * other)
     
     def __rmul__(self, other: int):
         return self.__mul__(other)
@@ -39,32 +55,32 @@ class Vec2:
     def __truediv__(self, other: int | float):
         if not (isinstance(other, int) or isinstance(other, float)):
             return NotImplemented
-        return Vec2(self.x / other, self.y / other)
+        return Vec2(self.x_or_r / other, self.y_or_c / other)
 
     def __floordiv__(self, other: int | float):
         if not (isinstance(other, int) or isinstance(other, float)):
             return NotImplemented
-        return Vec2(self.x // other, self.y // other)
+        return Vec2(self.x_or_r // other, self.y_or_c // other)
 
     def dot(self, other: Self):
         if not isinstance(other, Vec2):
             return NotImplemented
-        return self.x * other.x + self.y * other.y
+        return self.x_or_r * other.x_or_r + self.y_or_c * other.y_or_c
     
     def cross(self, other: Self):
         if not isinstance(other, Vec2):
             return NotImplemented
-        return self.x*other.y - self.y*other.x
+        return self.x_or_r*other.y_or_c - self.y_or_c*other.x_or_r
     
     def distance(self, other: Self) -> float:
         if not isinstance(other, Vec2):
             return NotImplemented
-        return sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
+        return sqrt((self.x_or_r - other.x_or_r)**2 + (self.y_or_c - other.y_or_c)**2)
 
     def manhattan_distance(self, other: Self):
         if not isinstance(other, Vec2):
             return NotImplemented
-        return abs(self.x - other.x) + abs(self.y - other.y)
+        return abs(self.x_or_r - other.x_or_r) + abs(self.y_or_c - other.y_or_c)
 
     def magnitude(self):
         return sqrt(self.dot(self))
@@ -74,7 +90,7 @@ class Vec2:
     
     def in_bounds_xy(self, grid: list[list[Any]], lower_limit_x=0, lower_limit_y=0, upper_limit_x=None, upper_limit_y=None):
         '''
-        NOTE: limits are `[lower, upper]`
+        NOTE: limits are `[lower, upper)`
         '''
         return (
             self.x >= lower_limit_x
@@ -85,7 +101,7 @@ class Vec2:
 
     def in_bounds_rc(self, grid: list[list[Any]], lower_limit_r=0, lower_limit_c=0, upper_limit_r=None, upper_limit_c=None):
         '''
-        NOTE: limits are `[lower, upper]`
+        NOTE: limits are `[lower, upper)`
         '''
         return (
             self.r >= lower_limit_r
@@ -95,7 +111,7 @@ class Vec2:
         )
 
     def __repr__(self) -> str:
-        return f'({self.x}, {self.y})'
+        return f'({self.x_or_r}, {self.y_or_c})'
 
 
 class XYDir:
