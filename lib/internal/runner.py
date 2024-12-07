@@ -168,9 +168,9 @@ class Advent:
                         if day_number in self._parsers:
                             ipt = self._parsers[day_number](f)
                     if self._attrs[day_number].use_part1:
-                        if not res.part1:
-                            res.part1 = self._call_runner_fn(self._days[(day_number, 1)], ipt)
-                        res.part2 = self._call_runner_fn(self._days[(day_number, 2)], ipt, res.part1)
+                        if not res._part1:
+                            res._part1 = self._call_runner_fn(self._days[(day_number, 1)], ipt)
+                        res.part2 = self._call_runner_fn(self._days[(day_number, 2)], ipt, res._part1)
                     else:
                         res.part2 = self._call_runner_fn(self._days[(day_number, 2)], ipt)
                 end_time = timer()
