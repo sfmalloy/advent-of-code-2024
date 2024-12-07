@@ -25,7 +25,7 @@ def solve(equations: dict[int, list[int]]):
     return p1, p2
 
 
-def find_ops_no_concat(ans: int, vals: list[int], test: int=0):
+def find_ops_no_concat(ans: int, vals: list[int]):
     if not vals:
         return ans == 0
     valslice = vals[:-1]
