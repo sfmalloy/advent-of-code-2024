@@ -27,26 +27,36 @@ def solve(equations: dict[int, list[int]]):
 
 def find_ops_no_concat(ans: int, vals: list[int], test: int=0):
     if not vals:
-        return test == ans
-    elif test > ans:
-        return False
-    return (
-        find_ops_no_concat(ans, vals[1:], test + vals[0])
-        or find_ops_no_concat(ans, vals[1:], ((test if test else 1) * vals[0]))
-    )
+        return ans == 0
+    valslice = vals[:-1]
+    test = False
 
+    if ans % vals[-1] == 0:
+        test = test or find_ops_no_concat(ans // vals[-1], valslice)
+    
+    if not test and ans - vals[-1] >= 0:
+        test = test or find_ops_no_concat(ans - vals[-1], valslice)
 
-def find_ops_concat(ans: int, vals: list[int], test: int=0):
+    return test
+
+def find_ops_concat(ans: int, vals: list[int]):
     if not vals:
-        return test == ans
-    elif test > ans:
-        return False
-    return (
-        find_ops_concat(ans, vals[1:], test + vals[0])
-        or find_ops_concat(ans, vals[1:], ((test if test else 1) * vals[0]))
-        or find_ops_concat(ans, vals[1:], concat(test, vals[0]))
-    )
+        return ans == 0
+    valslice = vals[:-1]
+    test = False
+
+    if ans % vals[-1] == 0:
+        test = test or find_ops_concat(ans // vals[-1], valslice)
+    
+    if not test and ans - vals[-1] >= 0:
+        test = test or find_ops_concat(ans - vals[-1], valslice)
+    
+    mag = 10**magnitude(vals[-1])
+    if not test and ans % mag == vals[-1]:
+        test = test or find_ops_concat(ans // mag, valslice)
+    
+    return test
 
 
-def concat(a: int, b: int):
-    return a * 10**(int(log10(b))+1) + b
+def magnitude(a: int):
+    return int(log10(a) + 1)
