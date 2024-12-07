@@ -1,9 +1,6 @@
 from lib import advent
 from io import TextIOWrapper
-from collections import deque, defaultdict
 from lib.common.vec import Vec2, RCDir
-from dataclasses import dataclass, field
-from typing import Optional
 
 
 @advent.parser(6)
@@ -37,13 +34,6 @@ def solve1(grid: list[str], pos: Vec2):
             pos -= DELTAS[curdir]
             curdir = (curdir + 1) % 4
     return len(visited)
-
-
-@dataclass(frozen=True)
-class Node:
-    pos: Vec2
-    dir: int
-    wall: Optional[Vec2] = None
 
 
 @advent.solver(6, part=2)
