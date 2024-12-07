@@ -48,32 +48,33 @@ class Node:
 
 @advent.solver(6, part=2)
 def solve2(grid: list[str], pos: Vec2):
-    start_pos = pos
-    curdir = 0
-    nodes: set[Vec2] = set()
+    dir = 0
+    path: list[tuple[Vec2, int]] = []
+    firsts = {}
     in_bounds = True
+    p = pos
     while in_bounds:
-        nodes.add(pos)
-        pos += DELTAS[curdir]
+        path.append((pos, dir))
+        if pos not in firsts:
+            firsts[pos] = (p, dir, len(path)-1)
+        pos += DELTAS[dir]
         in_bounds = pos.in_bounds_rc(grid)
         if in_bounds and grid[pos.r][pos.c] == '#':
-            pos -= DELTAS[curdir]
-            curdir = (curdir + 1) % 4
+            pos -= DELTAS[dir]
+            dir = (dir + 1) % 4
+        p = pos
     
-    pos = start_pos
-    new = 0
-    for v in nodes:
-        if grid[v.r][v.c] == '.':
-            grid[v.r][v.c] = '#'
-            if find_loop(grid, pos):
-                new += 1
-            grid[v.r][v.c] = '.'
-    return new
+    new = set()
+    for curr, _ in path[1:]:
+        if grid[curr.r][curr.c] == '.':
+            grid[curr.r][curr.c] = '#'
+            if curr not in new and find_loop(grid, firsts[curr][0], firsts[curr][1], set(path[:firsts[curr][2]])):
+                new.add(curr)
+            grid[curr.r][curr.c] = '.'
+    return len(new)
 
 
-def find_loop(grid: list[str], pos: Vec2):
-    curdir = 0
-    visited = set()
+def find_loop(grid: list[str], pos: Vec2, curdir: int, visited: set):
     in_bounds = True
     while in_bounds:
         if (pos, curdir) in visited:
