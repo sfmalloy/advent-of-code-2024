@@ -52,17 +52,17 @@ def solve2(grid: list[str], pos: Vec2):
     path: list[tuple[Vec2, int]] = []
     firsts = {}
     in_bounds = True
-    p = pos
+    prev = pos
     while in_bounds:
         path.append((pos, dir))
         if pos not in firsts:
-            firsts[pos] = (p, dir, len(path)-1)
+            firsts[pos] = (prev, dir, len(path)-1)
         pos += DELTAS[dir]
         in_bounds = pos.in_bounds_rc(grid)
         if in_bounds and grid[pos.r][pos.c] == '#':
             pos -= DELTAS[dir]
             dir = (dir + 1) % 4
-        p = pos
+        prev = pos
     
     new = set()
     for curr, _ in path[1:]:
