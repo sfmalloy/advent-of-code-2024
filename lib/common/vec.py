@@ -161,12 +161,8 @@ class RCDir:
         W: E
     }
 
-    _all = {N, S, E, W}
+    all = [N, S, E, W]
 
     @staticmethod
     def opposite(d: Self):
         return RCDir._opposite[d]
-
-    @staticmethod
-    def all():
-        return RCDir._all
