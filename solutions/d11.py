@@ -31,4 +31,3 @@ def blink(num: int, B: int):
         m = 10**(mag//2)
         return blink(num // m, B-1) + blink(num % m, B-1)
     return blink(num * 2024, B-1)
-
