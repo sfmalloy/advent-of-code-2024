@@ -19,13 +19,13 @@ def solve1(trail: list[list[int]]) -> int:
     
     visited = defaultdict(set)
     part1 = defaultdict(set)
-    part2 = defaultdict(int)
+    part2 = 0
     while q:
         id, pos = q.popleft()
         visited[id].add(pos)
         if trail[pos.r][pos.c] == 9:
             part1[id].add(pos)
-            part2[id] += 1
+            part2 += 1
             continue
         for dir in RCDir.all:
             new = pos + dir
@@ -35,4 +35,4 @@ def solve1(trail: list[list[int]]) -> int:
                 and trail[new.r][new.c] - trail[pos.r][pos.c] == 1
             ):
                 q.append((id, new))
-    return sum(len(e) for e in part1.values()), sum(part2.values())
+    return sum(len(e) for e in part1.values()), part2
