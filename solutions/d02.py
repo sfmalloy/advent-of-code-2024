@@ -1,5 +1,5 @@
 from lib import advent
-from lib.common.parsers import intlist
+from lib.common import intlist
 
 from io import TextIOWrapper
 from itertools import pairwise, compress

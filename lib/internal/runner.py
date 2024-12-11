@@ -1,3 +1,5 @@
+import gc
+import functools
 from dataclasses import dataclass, field
 from io import TextIOWrapper
 from pathlib import Path
@@ -207,8 +209,12 @@ class Advent:
         time = 0
         latest = None
         for _ in range(num_runs):
-            latest = self._run_single(day_number, input_path, hide, part) 
+            latest = self._run_single(day_number, input_path, hide, part)
             time += latest.time
+            gc.collect()
+            for obj in gc.get_objects():
+                if isinstance(obj, functools._lru_cache_wrapper):
+                    obj.cache_clear()
         res = Result(day_number, time / num_runs, hide)
         res.part1 = latest.part1
         res.part2 = latest.part2

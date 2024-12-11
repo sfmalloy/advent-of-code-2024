@@ -1,6 +1,6 @@
 from lib import advent
+from lib.common import magnitude
 from io import TextIOWrapper
-from math import log10
 
 
 @advent.parser(7)
@@ -57,7 +57,3 @@ def find_ops_concat(ans: int, vals: list[int]):
         test = test or find_ops_concat(ans // mag, valslice)
     
     return test
-
-
-def magnitude(a: int):
-    return int(log10(a) + 1)
