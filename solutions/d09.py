@@ -38,51 +38,38 @@ def solve2(diskmap: list[int]):
     ptr = 0
     padding = False
     id = 0
+    data_bounds = []
     for data in diskmap:
         if not padding:
-            for _ in range(data):
-                disk[ptr] = id
-                ptr += 1
+            disk[ptr:ptr+data] = [id]*data
             id += 1
-        else:
-            ptr += data
+            data_bounds.append((ptr, ptr+data))
+        ptr += data
         padding = not padding
-    
+
     id -= 1
-    start = len(disk) - 1
+    L = len(disk)
+    d = len(data_bounds) - 1
+    start = L - 1
     while start > 0:
-        # eat padding
-        while disk[start] != id:
-            start -= 1
-        
-        # get slice
-        end = start + 1
-        while disk[start] == id:
-            start -= 1
-        start += 1
+        start, end = data_bounds[d]
+        d -= 1
         slc = disk[start:end]
 
-        # find padding
         pad_start = 0
         while pad_start < start:
-            while disk[pad_start] != -1:
-                pad_start += 1
+            pad_start = disk.index(-1, pad_start)
             if pad_start > start:
                 break
             pad_end = pad_start
-            while pad_end < len(disk) and disk[pad_end] == -1:
+            while pad_end < L and disk[pad_end] == -1:
                 pad_end += 1
-            if pad_end >= len(disk):
+            if pad_end >= L:
                 break
             if pad_end - pad_start >= len(slc):
                 disk[pad_start:pad_start + len(slc)], disk[start:end] = disk[start:end], disk[pad_start:pad_start + len(slc)]
                 break
             pad_start += 1
-
         id -= 1
 
-    checksum = 0
-    for i, d in enumerate(disk):
-        if d != -1:
-            checksum += i * d
-    return checksum
+    return sum(i * d for i, d in enumerate(disk) if d > 0)
