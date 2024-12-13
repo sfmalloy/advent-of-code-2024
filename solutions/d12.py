@@ -74,8 +74,7 @@ def mark_fence(garden: list[list[str]], symbol: str, pos: Vec2):
         plot.append(row)
 
     plot = add_vertical_padding(plot, symbol)
-    transposed = add_vertical_padding(list(map(list, zip(*plot))), symbol)
-    plot = list(map(list, zip(*transposed)))
+    plot = add_vertical_padding(list(map(list, zip(*plot))), symbol)
 
     fences: set[Vec2] = set()
     for r, row in enumerate(plot):
