@@ -161,8 +161,30 @@ class RCDir:
         W: E
     }
 
+    _clockwise = {
+        N: E,
+        E: S,
+        S: W,
+        W: N
+    }
+
+    _counter_clockwise = {
+        N: W,
+        W: S,
+        S: E,
+        E: N
+    }
+
     all = [N, S, E, W]
 
     @staticmethod
     def opposite(d: Self):
         return RCDir._opposite[d]
+    
+    @staticmethod
+    def clockwise(src: Vec2):
+        return RCDir._clockwise[src]
+    
+    @staticmethod
+    def counter_clockwise(src: Vec2):
+        return RCDir._counter_clockwise[src]
