@@ -52,6 +52,9 @@ class Vec2:
     def __rmul__(self, other: int):
         return self.__mul__(other)
     
+    def __mod__(self, other: int):
+        return Vec2(self.x_or_r % other, self.y_or_c % other)
+    
     def __truediv__(self, other: int | float):
         if not (isinstance(other, int) or isinstance(other, float)):
             return NotImplemented
