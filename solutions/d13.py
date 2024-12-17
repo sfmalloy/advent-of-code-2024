@@ -6,10 +6,10 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Prize:
+class Machine:
     a: Vec2
     b: Vec2
-    p: Vec2
+    prize: Vec2
 
 
 @advent.parser(13)
@@ -20,20 +20,20 @@ def parse(file: TextIOWrapper):
         for line in group.splitlines():
             x, y = re.findall(r'\d+', line)
             vectors.append(Vec2(int(x), int(y)))
-        prizes.append(Prize(*vectors))
+        prizes.append(Machine(*vectors))
     return prizes
 
 
 @advent.solver(13, part=1)
-def solve1(prizes: list[Prize]):
-    return sum(find_combo(prize.a, prize.b, prize.p) for prize in prizes)
+def solve1(machines: list[Machine]):
+    return sum(find_combo(machine.a, machine.b, machine.prize) for machine in machines)
 
 
 @advent.solver(13, part=2)
-def solve2(prizes: list[Prize]):
-    for prize in prizes:
-        prize.p = Vec2(prize.p.x + 10000000000000, prize.p.y + 10000000000000)
-    return sum(find_combo(prize.a, prize.b, prize.p) for prize in prizes)
+def solve2(machines: list[Machine]):
+    for machine in machines:
+        machine.prize = Vec2(machine.prize.x + 10000000000000, machine.prize.y + 10000000000000)
+    return sum(find_combo(prize.a, prize.b, prize.prize) for prize in machines)
 
 
 def find_combo(a: Vec2, b: Vec2, p: Vec2):
