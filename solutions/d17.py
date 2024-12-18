@@ -73,6 +73,7 @@ class Computer:
         while not self.halted:
             if (out := self.step()) is not None:
                 output.append(out)
+        self.reset()
         return output
 
 
@@ -99,12 +100,7 @@ def solve2(comp: Computer):
 
 def find_digit(goal: list[int], comp: Computer, a: int):
     while True:
-        comp.registers[0] = a
-        output = []
-        while not comp.halted:
-            if (out := comp.step()) is not None:
-                output.append(out)
-        comp.reset()
+        output = comp.run(a)
         if output == goal:
             return a
         a += 1
