@@ -110,7 +110,6 @@ def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
             grid[pos.r][pos.c] = grid[old.r][old.c]
         return end
     
-    o_count = 0
     new_grid = []
     for row in grid:
         new_row = []
@@ -123,7 +122,6 @@ def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
                     new_row.append('.')
                     new_row.append('.')
                 case 'O':
-                    o_count += 1
                     new_row.append('[')
                     new_row.append(']')
         new_grid.append(new_row)
@@ -145,13 +143,8 @@ def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
         elif sym == '.':
             pos = new
     ans = 0
-    l_count = 0
-    r_count = 0
     for r, row in enumerate(grid):
         for c, col in enumerate(row):
             if col == '[':
-                l_count += 1
                 ans += 100 * r + c
-            elif col == ']':
-                r_count += 1
     return ans
