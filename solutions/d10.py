@@ -10,7 +10,7 @@ def parse(file: TextIOWrapper):
 
 
 @advent.solver(10)
-def solve1(trail: list[list[int]]) -> int:
+def solve(trail: list[list[int]]) -> int:
     q: deque[tuple[int, Vec2]] = deque()
     for r, row in enumerate(trail):
         for c, col in enumerate(row):
