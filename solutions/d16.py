@@ -12,8 +12,8 @@ def parse(file: TextIOWrapper):
 
 
 @advent.solver(16)
-def solve(grid: list[list[str]], start: Vec2, end: Vec2):
-    q = []
+def solve(grid: list[list[str]], start: Vec2, end: Vec2) -> tuple[int, int]:
+    q: list[tuple[int, Vec2, Vec2, set]] = []
     heappush(q, (0, start, RCDir.E, set()))
     dist = defaultdict(lambda: float('inf'))
     dist[start] = 0
