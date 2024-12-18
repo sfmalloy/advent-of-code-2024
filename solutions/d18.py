@@ -1,7 +1,7 @@
 from lib import advent
 from lib.common.vec import Vec2, RCDir
 from io import TextIOWrapper
-from collections import deque, defaultdict
+from collections import deque
 
 
 @advent.parser(18)
@@ -15,26 +15,11 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(18, part=1)
 def solve1(B: list[Vec2]):
-    B = B[:1024]
     R = C = 71
     grid = [[0 for _ in range(C)] for _ in range(R)]
-    for b in B:
+    for b in B[:1024]:
         grid[b.r][b.c] = 1
-    
-    q = deque([(Vec2(0, 0), 0)])
-    end = Vec2(R-1, C-1)
-    visited = set()
-    while q:
-        pos, L = q.popleft()
-        if pos == end:
-            return L
-        if pos in visited:
-            continue
-        visited.add(pos)
-        for d in RCDir.all:
-            new = pos + d
-            if new.in_bounds_rc(grid) and not grid[new.r][new.c] and new not in visited:
-                q.append((new, L+1))
+    return len(find_path(grid))
 
 
 @advent.solver(18, part=2)
