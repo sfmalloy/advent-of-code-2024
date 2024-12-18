@@ -1,7 +1,6 @@
 from lib import advent
 from lib.common.vec import Vec2, RCDir
 from io import TextIOWrapper
-from collections import deque, defaultdict
 
 
 @advent.parser(15)
