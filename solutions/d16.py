@@ -2,7 +2,7 @@ from lib import advent
 from lib.common.vec import Vec2, RCDir
 from io import TextIOWrapper
 from collections import defaultdict
-from queue import PriorityQueue
+from heapq import heappush, heappop
 
 
 @advent.parser(16)
@@ -13,14 +13,14 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(16)
 def solve(grid: list[list[str]], start: Vec2, end: Vec2):
-    q: PriorityQueue[tuple[int, Vec2, Vec2, set]] = PriorityQueue()
-    q.put((0, start, RCDir.E, set()))
+    q = []
+    heappush(q, (0, start, RCDir.E, set()))
     dist = defaultdict(lambda: float('inf'))
     dist[start] = 0
     visited = set()
     sit = set()
-    while not q.empty():
-        cost, pos, dir, path = q.get()
+    while q:
+        cost, pos, dir, path = heappop(q)
         if pos == end:
             if cost == dist[end]:
                 sit |= path 
@@ -30,7 +30,7 @@ def solve(grid: list[list[str]], start: Vec2, end: Vec2):
             new = pos + d
             move_cost = 1001 if d != dir else 1
             if grid[new.r][new.c] != '#' and (new, d) not in visited:
-                q.put((cost + move_cost, new, d, path | {pos}))
+                heappush(q, (cost + move_cost, new, d, path | {pos}))
                 if cost + move_cost < dist[new]:
                     dist[new] = cost + move_cost
     return dist[end], len(sit) + 1
