@@ -31,20 +31,21 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(15, part=1)
 def solve1(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
-    def push_box(grid: list[list[str]], direction: Vec2, pos: Vec2):
+
+    def push_box(direction: Vec2, pos: Vec2):
         if grid[pos.r][pos.c] == '.':
             grid[pos.r][pos.c] = 'O'
             return True
         elif grid[pos.r][pos.c] == '#':
             return False
-        return push_box(grid, direction, pos + direction)
+        return push_box(direction, pos + direction)
 
 
     for dir in instructions:
         new = (pos+dir)
         sym = grid[new.r][new.c]
         if sym == 'O':
-            if push_box(grid, dir, pos+dir):
+            if push_box(dir, pos+dir):
                 pos = new
                 grid[pos.r][pos.c] = '.'
         elif sym == '.':
@@ -60,7 +61,8 @@ def solve1(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
 
 @advent.solver(15, part=2)
 def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
-    def check_box_vertical(grid: list[list[str]], direction: Vec2, pos: Vec2, visited: set):
+    
+    def check_box_vertical(direction: Vec2, pos: Vec2, visited: set):
         if pos in visited:
             return True
         visited.add(pos)
@@ -68,30 +70,27 @@ def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
             return True
         elif grid[pos.r][pos.c] == '#':
             return False
-        if grid[pos.r][pos.c] == '[':
-            valid = check_box_vertical(grid, direction, pos + direction, visited) and check_box_vertical(grid, direction, pos + RCDir.R, visited)
-            return valid
-        elif grid[pos.r][pos.c] == ']':
-            valid = check_box_vertical(grid, direction, pos + direction, visited) and check_box_vertical(grid, direction, pos + RCDir.L, visited)
-            return valid
+        
+        neighbor = RCDir.R if grid[pos.r][pos.c] == '[' else RCDir.L
+        return check_box_vertical(direction, pos + direction, visited) and check_box_vertical(direction, pos + neighbor, visited)
 
 
-    def push_box_vertical(grid: list[list[str]], dir: Vec2, pos: Vec2, visited: set, src: Vec2, checked: set):
+    def push_box_vertical(dir: Vec2, pos: Vec2, visited: set):
         if pos in visited:
             return
         visited.add(pos)
         if grid[pos.r][pos.c] == '[':
-            push_box_vertical(grid, dir, pos + dir, visited, src, checked)
-            push_box_vertical(grid, dir, pos + RCDir.R, visited, src, checked)
-
             new = pos + dir
+            push_box_vertical(dir, new, visited)
+            push_box_vertical(dir, pos + RCDir.R, visited)
+
             grid[pos.r][pos.c] = '.'
             grid[new.r][new.c] = '['
         elif grid[pos.r][pos.c] == ']':
-            push_box_vertical(grid, dir, pos + dir, visited, src, checked)
-            push_box_vertical(grid, dir, pos + RCDir.L, visited, src, checked)
-
             new = pos + dir
+            push_box_vertical(dir, new, visited)
+            push_box_vertical(dir, pos + RCDir.L, visited)
+
             grid[pos.r][pos.c] = '.'
             grid[new.r][new.c] = ']'
 
@@ -132,16 +131,14 @@ def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
         new = pos + dir
         sym = grid[new.r][new.c]
         if sym == '[' or sym == ']':
-            if (dir == RCDir.U or dir == RCDir.D):
-                visited = set()
-                checked = set()
-                if check_box_vertical(grid, dir, new, checked):
-                    push_box_vertical(grid, dir, new, visited, new, checked)
-                    pos = new
+            if (dir == RCDir.U or dir == RCDir.D) and check_box_vertical(dir, new, set()):
+                push_box_vertical(dir, new, set())
+                pos = new
             elif (dir == RCDir.R or dir == RCDir.L) and push_box_horizontal(grid, dir, new):
                 pos = new
         elif sym == '.':
             pos = new
+
     ans = 0
     for r, row in enumerate(grid):
         for c, col in enumerate(row):
