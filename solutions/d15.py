@@ -31,7 +31,7 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(15, part=1)
 def solve1(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
-
+    # inline functions to make param list smaller
     def push_box(direction: Vec2, pos: Vec2):
         if grid[pos.r][pos.c] == '.':
             grid[pos.r][pos.c] = 'O'
@@ -43,12 +43,12 @@ def solve1(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
 
     for dir in instructions:
         new = (pos+dir)
-        sym = grid[new.r][new.c]
-        if sym == 'O':
+        symbol = grid[new.r][new.c]
+        if symbol == 'O':
             if push_box(dir, pos+dir):
                 pos = new
                 grid[pos.r][pos.c] = '.'
-        elif sym == '.':
+        elif symbol == '.':
             pos = new
     
     ans = 0
@@ -61,8 +61,10 @@ def solve1(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
 
 @advent.solver(15, part=2)
 def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
-    
-    def check_box_vertical(direction: Vec2, pos: Vec2, visited: set):
+    # inline functions to make param list smaller
+    def check_box_vertical(direction: Vec2, pos: Vec2, visited: set | None = None):
+        if visited is None:
+            visited = set()
         if pos in visited:
             return True
         visited.add(pos)
@@ -75,27 +77,28 @@ def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
         return check_box_vertical(direction, pos + direction, visited) and check_box_vertical(direction, pos + neighbor, visited)
 
 
-    def push_box_vertical(dir: Vec2, pos: Vec2, visited: set):
-        if pos in visited:
+    def push_box_vertical(dir: Vec2, pos: Vec2, visited: set | None = None):
+        if visited is None:
+            visited = set()
+        if pos in visited or grid[pos.r][pos.c] == '.':
             return
         visited.add(pos)
+
         if grid[pos.r][pos.c] == '[':
-            new = pos + dir
-            push_box_vertical(dir, new, visited)
-            push_box_vertical(dir, pos + RCDir.R, visited)
-
-            grid[pos.r][pos.c] = '.'
-            grid[new.r][new.c] = '['
-        elif grid[pos.r][pos.c] == ']':
-            new = pos + dir
-            push_box_vertical(dir, new, visited)
-            push_box_vertical(dir, pos + RCDir.L, visited)
-
-            grid[pos.r][pos.c] = '.'
-            grid[new.r][new.c] = ']'
+            neighbor = RCDir.R
+            symbol = '['
+        else:
+            neighbor = RCDir.L
+            symbol = ']'
+        
+        new = pos + dir
+        push_box_vertical(dir, new, visited)
+        push_box_vertical(dir, pos + neighbor, visited)
+        grid[pos.r][pos.c] = '.'
+        grid[new.r][new.c] = symbol
 
 
-    def push_box_horizontal(grid: list[list[str]], direction: Vec2, pos: Vec2):
+    def push_box_horizontal(direction: Vec2, pos: Vec2):
         if grid[pos.r][pos.c] == '.':
             old = pos - dir
             grid[pos.r][pos.c] = grid[old.r][old.c]
@@ -103,7 +106,7 @@ def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
         elif grid[pos.r][pos.c] == '#':
             return None
 
-        end = push_box_horizontal(grid, direction, pos + direction)
+        end = push_box_horizontal(direction, pos + direction)
         if end:
             old = pos-dir
             grid[pos.r][pos.c] = grid[old.r][old.c]
@@ -115,33 +118,30 @@ def solve2(grid: list[list[str]], instructions: list[Vec2], pos: Vec2):
         for col in row:
             match col:
                 case '#':
-                    new_row.append('#')
-                    new_row.append('#')
+                    new_row.extend('##')
                 case '.':
-                    new_row.append('.')
-                    new_row.append('.')
+                    new_row.extend('..')
                 case 'O':
-                    new_row.append('[')
-                    new_row.append(']')
+                    new_row.extend('[]')
         new_grid.append(new_row)
     grid = new_grid
     pos = Vec2(pos.r, pos.c*2)
 
     for dir in instructions:
         new = pos + dir
-        sym = grid[new.r][new.c]
-        if sym == '[' or sym == ']':
-            if (dir == RCDir.U or dir == RCDir.D) and check_box_vertical(dir, new, set()):
-                push_box_vertical(dir, new, set())
+        symbol = grid[new.r][new.c]
+        if symbol == '[' or symbol == ']':
+            if (dir == RCDir.U or dir == RCDir.D) and check_box_vertical(dir, new):
+                push_box_vertical(dir, new)
                 pos = new
-            elif (dir == RCDir.R or dir == RCDir.L) and push_box_horizontal(grid, dir, new):
+            elif (dir == RCDir.R or dir == RCDir.L) and push_box_horizontal(dir, new):
                 pos = new
-        elif sym == '.':
+        elif symbol == '.':
             pos = new
 
     ans = 0
     for r, row in enumerate(grid):
         for c, col in enumerate(row):
             if col == '[':
-                ans += 100 * r + c
+                ans += 100*r + c
     return ans
