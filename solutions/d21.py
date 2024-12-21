@@ -2,6 +2,7 @@ from lib import advent
 from lib.common.vec import Vec2, RCDir
 from io import TextIOWrapper
 from collections import deque
+from functools import cache
 
 g_cache = {}
 
@@ -36,7 +37,7 @@ def solve1(codes: list[str]):
     g_cache = {}
     ans = 0
     for code in codes:
-        ans += int(code[:-1]) * find_path(code, 3, 0)
+        ans += int(code[:-1]) * find_path(code, 3)
     return ans
 
 
@@ -46,14 +47,14 @@ def solve2(codes: list[str]):
     g_cache = {}
     ans = 0
     for code in codes:
-        ans += int(code[:-1]) * find_path(code, 26, 0)
+        ans += int(code[:-1]) * find_path(code, 26)
     return ans
 
 
-def find_path(goal_seq: str, num_keypads: int, dimension: int=0):
+def find_path(goal_seq: str, num_robots: int, dimension: int=0):
     if (goal_seq, dimension) in g_cache:
         return g_cache[(goal_seq, dimension)]
-    if dimension == num_keypads:
+    if dimension == num_robots:
         return len(goal_seq)
 
     keypad = NUMERIC_KEYPAD if dimension == 0 else DIRECTIONAL_KEYPAD
@@ -61,16 +62,18 @@ def find_path(goal_seq: str, num_keypads: int, dimension: int=0):
     L = 0
     for dst in goal_seq:
         best = float('inf')
-        for path in shortest_paths(src, dst, keypad):
+        for path in shortest_paths(src, dst, dimension == 0):
             path += 'A'
-            best = min(best, find_path(path, num_keypads, dimension + 1))
+            best = min(best, find_path(path, num_robots, dimension + 1))
         L += best
         src = dst
     g_cache[(goal_seq, dimension)] = L
     return L
 
 
-def shortest_paths(src: str, dst: str, keypad: list[str]):
+@cache
+def shortest_paths(src: str, dst: str, use_numeric: bool):
+    keypad = NUMERIC_KEYPAD if use_numeric else DIRECTIONAL_KEYPAD
     q = deque([(find_symbol(keypad, src), '')])
     paths = []
     shortest_len = float('inf')
