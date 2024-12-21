@@ -20,14 +20,14 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(20, part=1)
 def solve1(grid: list[list[str]], start: Vec2, end: Vec2) -> int:
-    cache, path = setup_race(grid, start, end)
-    return find_cheats(2, cache, path)
+    dist_to_end, path = setup_race(grid, start, end)
+    return find_cheats(2, dist_to_end, path)
 
 
 @advent.solver(20, part=2)
 def solve2(grid: list[list[str]], start: Vec2, end: Vec2):
-    cache, path = setup_race(grid, start, end)
-    return find_cheats(20, cache, path)
+    dist_to_end, path = setup_race(grid, start, end)
+    return find_cheats(20, dist_to_end, path)
 
 
 def find_cheats(cheat_limit: int, dist_to_end: dict[Vec2, int], path: list[Vec2]) -> int:
@@ -35,15 +35,13 @@ def find_cheats(cheat_limit: int, dist_to_end: dict[Vec2, int], path: list[Vec2]
     for i, src in enumerate(path):
         for dst in path[i+1:]:
             dist = dst.manhattan_distance(src)
-            if dist <= cheat_limit and dist > 1:
-                time_save = dist_to_end[src] - dist - dist_to_end[dst]
-                if time_save >= 100:
-                    count += 1
+            if dist <= cheat_limit and dist > 1 and dist_to_end[src] - dist - dist_to_end[dst] >= 100:
+                count += 1
     return count
 
 
 def setup_race(grid: list[list[str]], start: Vec2, end: Vec2) -> tuple[dict[Vec2, int], list[Vec2]]:
-    cache_setup = {}
+    dist_setup = {}
 
     q = deque([(start, list())])
     visited = set()
@@ -59,11 +57,11 @@ def setup_race(grid: list[list[str]], start: Vec2, end: Vec2) -> tuple[dict[Vec2
             new = pos + d
             if new.in_bounds_rc(grid) and (grid[new.r][new.c] != '#') and new not in visited:
                 q.append((new, path + [pos]))
-                cache_setup[pos] = len(path)
+                dist_setup[pos] = len(path)
     
-    cache = {}
-    for k, v in cache_setup.items():
-        cache[k] = len(init_path) - v
-    cache[end] = 0
+    dist_to_end = {}
+    for k, v in dist_setup.items():
+        dist_to_end[k] = len(init_path) - v
+    dist_to_end[end] = 0
     init_path.append(end)
-    return cache, init_path
+    return dist_to_end, init_path
