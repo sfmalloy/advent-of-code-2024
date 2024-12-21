@@ -3,7 +3,6 @@ from lib.common.vec import Vec2, RCDir
 from io import TextIOWrapper
 from collections import deque
 
-
 g_cache = {}
 
 NUMERIC_KEYPAD = [
@@ -72,7 +71,6 @@ def find_path(goal_seq: str, num_keypads: int, dimension: int=0):
 
 
 def shortest_paths(src: str, dst: str, keypad: list[str]):
-
     q = deque([(find_symbol(keypad, src), '')])
     paths = []
     shortest_len = float('inf')
