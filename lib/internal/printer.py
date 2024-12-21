@@ -53,7 +53,8 @@ def print_table(outputs: list[Result]):
         end += f'┴{"─"*(widths.time)}╯'
 
     print(header, end='')
-    print((_build_separator(widths, p1, p2)).join(middle), end='')
+    # print((_build_separator(widths, p1, p2)).join(middle), end='')
+    print(''.join(middle), end='')
     print(end)
 
 
