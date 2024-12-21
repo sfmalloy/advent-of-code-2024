@@ -53,8 +53,7 @@ def find_path(goal_seq: str, num_robots: int, dimension: int=0):
     for dst in goal_seq:
         best = float('inf')
         for path in shortest_paths(src, dst, dimension == 0):
-            path += 'A'
-            best = min(best, find_path(path, num_robots, dimension + 1))
+            best = min(best, find_path(path + 'A', num_robots, dimension + 1))
         L += best
         src = dst
     return L
