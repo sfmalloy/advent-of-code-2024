@@ -1,5 +1,6 @@
 from lib import advent
 from lib.common.vec import Vec2, RCDir
+from lib.common.tools import cachable
 from io import TextIOWrapper
 from collections import deque
 from functools import cache
@@ -33,27 +34,20 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(21, part=1)
 def solve1(codes: list[str]):
-    global g_cache
-    g_cache = {}
-    ans = 0
-    for code in codes:
-        ans += int(code[:-1]) * find_path(code, 3)
-    return ans
+    return sum(code_length(code, 2) for code in codes)
 
 
 @advent.solver(21, part=2)
 def solve2(codes: list[str]):
-    global g_cache
-    g_cache = {}
-    ans = 0
-    for code in codes:
-        ans += int(code[:-1]) * find_path(code, 26)
-    return ans
+    return sum(code_length(code, 25) for code in codes)
 
 
+def code_length(code: str, robot_dpads: int):
+    return int(code[:-1]) * find_path(code, robot_dpads + 1)
+
+
+@cache
 def find_path(goal_seq: str, num_robots: int, dimension: int=0):
-    if (goal_seq, dimension) in g_cache:
-        return g_cache[(goal_seq, dimension)]
     if dimension == num_robots:
         return len(goal_seq)
 
@@ -66,7 +60,6 @@ def find_path(goal_seq: str, num_robots: int, dimension: int=0):
             best = min(best, find_path(path, num_robots, dimension + 1))
         L += best
         src = dst
-    g_cache[(goal_seq, dimension)] = L
     return L
 
 
