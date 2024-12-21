@@ -57,7 +57,6 @@ def find_path(goal_seq: str, num_robots: int, dimension: int=0):
     if dimension == num_robots:
         return len(goal_seq)
 
-    keypad = NUMERIC_KEYPAD if dimension == 0 else DIRECTIONAL_KEYPAD
     src = 'A'
     L = 0
     for dst in goal_seq:
