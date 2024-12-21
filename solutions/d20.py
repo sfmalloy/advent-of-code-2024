@@ -35,7 +35,7 @@ def find_cheats(cheat_limit: int, dist_to_end: dict[Vec2, int], path: list[Vec2]
     for i, src in enumerate(path):
         for dst in path[i+1:]:
             dist = dst.manhattan_distance(src)
-            if dist <= cheat_limit and dist > 1 and dist_to_end[src] - dist - dist_to_end[dst] >= 100:
+            if 1 < dist <= cheat_limit and dist_to_end[src] - dist - dist_to_end[dst] >= 100:
                 count += 1
     return count
 
