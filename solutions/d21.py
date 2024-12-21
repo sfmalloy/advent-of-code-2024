@@ -18,6 +18,13 @@ DIRECTIONAL_KEYPAD = [
     '<v>'
 ]
 
+MOVE_SYMBOLS = {
+    RCDir.U: '^',
+    RCDir.D: 'v',
+    RCDir.L: '<',
+    RCDir.R: '>'
+}
+
 
 @advent.parser(21)
 def parse(file: TextIOWrapper):
@@ -65,12 +72,7 @@ def find_path(goal_seq: str, num_keypads: int, dimension: int=0):
 
 
 def shortest_paths(src: str, dst: str, keypad: list[str]):
-    move_symbols = {
-        RCDir.U: '^',
-        RCDir.D: 'v',
-        RCDir.L: '<',
-        RCDir.R: '>'
-    }
+
     q = deque([(find_symbol(keypad, src), '')])
     paths = []
     shortest_len = float('inf')
@@ -85,7 +87,7 @@ def shortest_paths(src: str, dst: str, keypad: list[str]):
         for d in RCDir.all:
             new = pos + d
             if new.in_bounds_rc(keypad) and keypad[new.r][new.c] != '.':
-                q.append((new, path + move_symbols[d]))
+                q.append((new, path + MOVE_SYMBOLS[d]))
     return paths
 
 
