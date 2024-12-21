@@ -1,11 +1,8 @@
 from lib import advent
 from lib.common.vec import Vec2, RCDir
-from lib.common.tools import cachable
 from io import TextIOWrapper
 from collections import deque
 from functools import cache
-
-g_cache = {}
 
 NUMERIC_KEYPAD = [
     '789',
