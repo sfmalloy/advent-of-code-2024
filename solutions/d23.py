@@ -1,7 +1,6 @@
 from lib import advent
 from io import TextIOWrapper
 from collections import deque, defaultdict
-from itertools import permutations
 
 
 @advent.parser(23)
@@ -52,7 +51,12 @@ def bron_kerbosch(
         return subset
     best = set()
     for v in set(possible_connections):
-        new = bron_kerbosch(subset | {v}, possible_connections & connections[v], impossible_connections & connections[v], connections)
+        new = bron_kerbosch(
+            subset | {v},
+            possible_connections & connections[v],
+            impossible_connections & connections[v],
+            connections
+        )
         if len(new) > len(best):
             best = new
         possible_connections -= {v}
