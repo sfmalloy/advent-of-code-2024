@@ -34,32 +34,27 @@ def solve1(connections: defaultdict[str, set[str]]):
 
 @advent.solver(23, part=2)
 def solve2(connections: defaultdict[str, set[str]]):
-    depth = 4
-    while True:
-        found = find_connections(depth, connections) 
-        if len(found) == 1:
-            return ','.join(found.pop())
-        depth += 1
-
-
-def find_connections(depth: int, connections: defaultdict[str, set]):
-    valid = set()
-    visited = set()
+    best = set()
     for src in connections:
-        q = deque([(src, {src})])
-        while q:
-            curr, path = q.pop()
-            if len(path) == depth:
-                valid.add(tuple(sorted(path)))
-                if len(valid) > 1:
-                    return valid
-                continue
-            if (curr, tuple(sorted(path))) in visited:
-                continue
-            visited.add((curr, tuple(sorted(path))))
-            for dst in connections[curr]:
-                if (dst, tuple(sorted(path | {dst}))) in visited:
-                    continue
-                if not path or connections[dst] & path == path:
-                    q.append((dst, path | {dst}))
-    return valid
+        subset = bron_kerbosch({src}, connections[src], set(), connections)
+        if len(subset) > len(best):
+            best = subset
+    return ','.join(sorted(best))
+
+
+def bron_kerbosch(
+    subset: set[str],
+    possible_connections: set[str],
+    impossible_connections: set[str],
+    connections: defaultdict[str, set[str]]
+):
+    if not possible_connections and not impossible_connections:
+        return subset
+    best = set()
+    for v in set(possible_connections):
+        new = bron_kerbosch(subset | {v}, possible_connections & connections[v], impossible_connections & connections[v], connections)
+        if len(new) > len(best):
+            best = new
+        possible_connections -= {v}
+        impossible_connections |= {v}
+    return best
