@@ -1,8 +1,10 @@
+import math
 from lib import advent
 from io import TextIOWrapper
 from collections import deque, defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import Self
 
 GATE_FUNCTIONS = {
     'AND': lambda a, b: a & b,
@@ -17,6 +19,7 @@ class Gate:
     op: Callable[[int, int], int]
     out: str
     waiting: bool
+    opname: str
 
     def __init__(self, a, op, b, out):
         self.a = a
@@ -24,10 +27,14 @@ class Gate:
         self.op = GATE_FUNCTIONS[op]
         self.out = out
         self.waiting = True
+        self.opname = op
 
     def output(self, wires: defaultdict[str, int]):
         wires[self.out] = self.op(wires[self.a], wires[self.b])
         self.waiting = False
+    
+    def reset(self):
+        self.waiting = True
 
 
 @advent.parser(24)
@@ -46,7 +53,74 @@ def parse(file: TextIOWrapper):
 
 @advent.solver(24, part=1)
 def solve1(wires: defaultdict[str, int], rules: list[Gate]):
-    while any(rule.waiting for rule in rules):
+    return run(wires, rules)
+
+
+@dataclass
+class Node:
+    a: Self | str
+    b: Self | str
+
+
+# https://www.reddit.com/r/adventofcode/comments/1hla5ql/2024_day_24_part_2_a_guide_on_the_idea_behind_the/
+# https://en.wikipedia.org/wiki/Adder_(electronics)#Ripple-carry_adder
+# had to look up some hints from the reddit thread, and the wikipedia page has a nice ripple-carry adder diagram
+@advent.solver(24, part=2)
+def solve2(wires: defaultdict[str, int], rules: list[Gate]):
+    invalid = []
+    def find_op(src: str, opname: str):
+        for r in rules:
+            if (r.a == src or r.b == src) and r.opname == opname:
+                return True
+        return False
+
+    for r in rules:
+        if r.out == 'z45':
+            continue
+        if r.out.startswith('z') and r.opname != 'XOR':
+            invalid.append(r.out)
+        elif r.opname == 'AND' and r.a != 'x00' and not find_op(r.out, 'OR'):
+            invalid.append(r.out)
+        elif not r.out.startswith('z') and not r.a.startswith(('x', 'y')) and r.opname == 'XOR':
+            invalid.append(r.out)
+        elif r.opname == 'XOR' and r.a.startswith(('x', 'y')) and r.a != 'x00' and not find_op(r.out, 'XOR'):
+            invalid.append(r.out)
+    return ','.join(sorted(invalid))
+
+
+def walk(wire: str, rules: dict[str, Gate], goal: int=0, indent=0, seen: frozenset=None):
+    print((' '*indent) + wire, end='=')
+    if not seen:
+        seen = frozenset()
+    if 'x' in wire or 'y' in wire:
+        print()
+        return
+    rule = rules[wire]
+    print(f'{rule.opname}(')
+    if rule.a not in rules:
+        walk(rule.a, rules, goal, indent+2)
+        walk(rule.b, rules, goal, indent+2)
+    else:
+        match (rules[rule.a].opname, rules[rule.b].opname):
+            case ('XOR', 'AND'):
+                walk(rule.a, rules, goal, indent+2)
+                walk(rule.b, rules, goal, indent+2)
+            case ('AND', 'XOR'):
+                walk(rule.b, rules, goal, indent+2)
+                walk(rule.a, rules, goal, indent+2)
+            case (_, 'OR'):
+                walk(rule.b, rules, goal, indent+2)
+                walk(rule.a, rules, goal, indent+2)
+            case _, _:
+                walk(rule.a, rules, goal, indent+2)
+                walk(rule.b, rules, goal, indent+2)
+    print((' '*indent) + ')')
+    return seen
+
+
+def run(wires: defaultdict[str, int], rules: list[Gate]):
+    wires = wires.copy()
+    while any(r.waiting for r in rules):
         for rule in rules:
             if rule.waiting and rule.a in wires and rule.b in wires:
                 rule.output(wires)
@@ -55,35 +129,6 @@ def solve1(wires: defaultdict[str, int], rules: list[Gate]):
     while f'z{i:02}' in wires:
         output.append(str(wires[f'z{i:02}']))
         i += 1
+    for r in rules:
+        r.reset()
     return int(''.join(reversed(output)), base=2)
-
-
-@advent.solver(24, part=2)
-def solve2(wires: defaultdict[str, int], rules: list[Gate]):
-    output_to_rule = {rule.out: rule for rule in rules}
-    xy_size = 0
-    # for r in rules:
-    #     if 'x' in r.a:
-    #         xy_size = max(xy_size, int(r.a[1:]))
-    #     elif 'x' in r.b:
-    #         xy_size = max(xy_size, int(r.b[1:]))
-    for k,v in output_to_rule.items():
-        if 'z' in v.out:
-            print(v.out)
-            find_z(v.a, rules, int(v.out[1:]), 2)
-            find_z(v.b, rules, int(v.out[1:]), 2)
-    return 0
-
-
-def find_z(wire: str, rules: list[Gate], goal: int, indent=0):
-    if 'z' in wire or 'x' in wire or 'y' in wire:
-        return int(wire[1:]) == goal
-    for w in rules:
-        if w.out == wire:
-            if find_z(w.a, rules, indent + 2) or find_z(w.b, rules, goal, indent + 2):
-                return True
-    return False
-    # print(wire)
-    # find_z(output_to_rule[wire].a, wires, output_to_rule, indent + 2)
-    # print(wire)
-    # find_z(output_to_rule[wire].b, wires, output_to_rule, indent + 2)
