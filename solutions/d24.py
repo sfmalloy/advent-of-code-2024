@@ -80,12 +80,12 @@ def solve2(_: defaultdict[str, int], rules: list[Gate]):
     return ','.join(sorted([i for i in invalid if not i.startswith(('x', 'y'))]))
 
 
-def walk(wire: str, rules: dict[str, Gate], goal: int=0, indent=0, depth: int=3):
+def walk(wire: str, rules: dict[str, Gate], goal: int = 0, indent: int = 0, depth: int = 3):
     if depth == 0:
         return ''
     s = (' '*indent) + wire + '='
     if 'x' in wire or 'y' in wire:
-        return s + '\n'
+        return s[:-1] + '\n'
     rule = rules[wire]
     s += f'{rule.opname}(\n'
     if rule.a not in rules:
