@@ -1,3 +1,4 @@
+import re
 from lib import advent
 from io import TextIOWrapper
 from collections import defaultdict
@@ -61,60 +62,51 @@ class Node:
     b: Self | str
 
 
-# https://www.reddit.com/r/adventofcode/comments/1hla5ql/2024_day_24_part_2_a_guide_on_the_idea_behind_the/
-# https://en.wikipedia.org/wiki/Adder_(electronics)#Ripple-carry_adder
-# had to look up some hints from the reddit thread, and the wikipedia page has a nice ripple-carry adder diagram
 @advent.solver(24, part=2)
 def solve2(_: defaultdict[str, int], rules: list[Gate]):
     invalid = []
-    def find_op(src: str, opname: str):
-        for r in rules:
-            if (r.a == src or r.b == src) and r.opname == opname:
-                return True
-        return False
-
-    for r in rules:
-        if r.out == 'z45':
-            continue
-        if r.opname != 'XOR' and r.out.startswith('z'):
-            invalid.append(r.out)
-        elif r.opname == 'AND' and r.a != 'x00' and not find_op(r.out, 'OR'):
-            invalid.append(r.out)
-        elif r.opname == 'XOR' and not r.out.startswith('z') and not r.a.startswith(('x', 'y')):
-            invalid.append(r.out)
-        elif r.opname == 'XOR' and r.a.startswith(('x', 'y')) and r.a != 'x00' and not find_op(r.out, 'XOR'):
-            invalid.append(r.out)
-    return ','.join(sorted(invalid))
+    for i in range(2, 45):
+        lines = walk(f'z{i:02}', {rule.out: rule for rule in rules}).splitlines()
+        if 'XOR' not in lines[0]:
+            invalid.append(lines[0].lstrip()[:3])
+        elif 'AND' in lines[1] or 'XOR' in lines[1]:
+            invalid.append(lines[1].lstrip()[:3])
+        elif 'AND' not in lines[2]:
+            invalid.append(lines[2].lstrip()[:3])
+        elif 'AND' not in lines[4]:
+            invalid.append(lines[4].lstrip()[:3])
+        elif 'XOR' not in lines[7]:
+            invalid.append(lines[7].lstrip()[:3])
+    return ','.join(sorted([i for i in invalid if not i.startswith(('x', 'y'))]))
 
 
-def walk(wire: str, rules: dict[str, Gate], goal: int=0, indent=0, seen: frozenset=None):
-    print((' '*indent) + wire, end='=')
-    if not seen:
-        seen = frozenset()
+def walk(wire: str, rules: dict[str, Gate], goal: int=0, indent=0, depth: int=3):
+    if depth == 0:
+        return ''
+    s = (' '*indent) + wire + '='
     if 'x' in wire or 'y' in wire:
-        print()
-        return
+        return s + '\n'
     rule = rules[wire]
-    print(f'{rule.opname}(')
+    s += f'{rule.opname}(\n'
     if rule.a not in rules:
-        walk(rule.a, rules, goal, indent+2)
-        walk(rule.b, rules, goal, indent+2)
+        s += walk(rule.a, rules, goal, indent+2, depth-1)
+        s += walk(rule.b, rules, goal, indent+2, depth-1)
     else:
         match (rules[rule.a].opname, rules[rule.b].opname):
             case ('XOR', 'AND'):
-                walk(rule.a, rules, goal, indent+2)
-                walk(rule.b, rules, goal, indent+2)
+                s += walk(rule.a, rules, goal, indent+2, depth-1)
+                s += walk(rule.b, rules, goal, indent+2, depth-1)
             case ('AND', 'XOR'):
-                walk(rule.b, rules, goal, indent+2)
-                walk(rule.a, rules, goal, indent+2)
+                s += walk(rule.b, rules, goal, indent+2, depth-1)
+                s += walk(rule.a, rules, goal, indent+2, depth-1)
             case (_, 'OR'):
-                walk(rule.b, rules, goal, indent+2)
-                walk(rule.a, rules, goal, indent+2)
+                s += walk(rule.b, rules, goal, indent+2, depth-1)
+                s += walk(rule.a, rules, goal, indent+2, depth-1)
             case _, _:
-                walk(rule.a, rules, goal, indent+2)
-                walk(rule.b, rules, goal, indent+2)
-    print((' '*indent) + ')')
-    return seen
+                s += walk(rule.a, rules, goal, indent+2, depth-1)
+                s += walk(rule.b, rules, goal, indent+2, depth-1)
+    s += (' '*indent) + ')\n'
+    return s
 
 
 def run(wires: defaultdict[str, int], rules: list[Gate]):
