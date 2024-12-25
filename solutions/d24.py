@@ -1,7 +1,6 @@
-import math
 from lib import advent
 from io import TextIOWrapper
-from collections import deque, defaultdict
+from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Self
@@ -66,7 +65,7 @@ class Node:
 # https://en.wikipedia.org/wiki/Adder_(electronics)#Ripple-carry_adder
 # had to look up some hints from the reddit thread, and the wikipedia page has a nice ripple-carry adder diagram
 @advent.solver(24, part=2)
-def solve2(wires: defaultdict[str, int], rules: list[Gate]):
+def solve2(_: defaultdict[str, int], rules: list[Gate]):
     invalid = []
     def find_op(src: str, opname: str):
         for r in rules:
@@ -77,11 +76,11 @@ def solve2(wires: defaultdict[str, int], rules: list[Gate]):
     for r in rules:
         if r.out == 'z45':
             continue
-        if r.out.startswith('z') and r.opname != 'XOR':
+        if r.opname != 'XOR' and r.out.startswith('z'):
             invalid.append(r.out)
         elif r.opname == 'AND' and r.a != 'x00' and not find_op(r.out, 'OR'):
             invalid.append(r.out)
-        elif not r.out.startswith('z') and not r.a.startswith(('x', 'y')) and r.opname == 'XOR':
+        elif r.opname == 'XOR' and not r.out.startswith('z') and not r.a.startswith(('x', 'y')):
             invalid.append(r.out)
         elif r.opname == 'XOR' and r.a.startswith(('x', 'y')) and r.a != 'x00' and not find_op(r.out, 'XOR'):
             invalid.append(r.out)
