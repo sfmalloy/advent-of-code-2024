@@ -2,6 +2,7 @@ from lib import advent
 from lib.common.vec import Vec2
 from io import TextIOWrapper
 from collections import defaultdict
+from itertools import product
 
 
 @advent.parser(8)
@@ -21,12 +22,12 @@ def parse(file: TextIOWrapper):
 def solve1(antennas: defaultdict[str, list[Vec2]], R: int, C: int):
     antinodes = set()
     for points in antennas.values():
-        for src in points:
-            for dst in points:
-                if src != dst:
-                    node = dst - (src - dst)
-                    if node.in_bounds_rc(None, 0, 0, R, C):
-                        antinodes.add(node)
+        for src, dst in product(points, points):
+            if src == dst:
+                continue
+            node = 2*dst - src
+            if node.in_bounds_rc(None, 0, 0, R, C):
+                antinodes.add(node)
     return len(antinodes)
 
 
@@ -34,12 +35,12 @@ def solve1(antennas: defaultdict[str, list[Vec2]], R: int, C: int):
 def solve2(antennas: defaultdict[str, list[Vec2]], R: int, C: int):
     antinodes = set()
     for points in antennas.values():
-        for src in points:
-            for dst in points:
-                if src != dst:
-                    delta = (src - dst)
-                    node = dst
-                    while node.in_bounds_rc(None, 0, 0, R, C):
-                        antinodes.add(node)
-                        node -= delta
+        for src, dst in product(points, points):
+            if src == dst:
+                continue
+            delta = src - dst
+            node = dst
+            while node.in_bounds_rc(None, 0, 0, R, C):
+                antinodes.add(node)
+                node -= delta
     return len(antinodes)
